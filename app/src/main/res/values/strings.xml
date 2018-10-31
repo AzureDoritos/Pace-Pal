@@ -3,4 +3,7 @@
     <string name="title_home">Friends</string>
     <string name="title_dashboard">Home</string>
     <string name="title_notifications">Profile</string>
+    <string name="competitive_mode">Competitive Mode</string>
+    <string name="collaborative_mode">Collaborative Mode</string>
+    <string name="social_mode">Social Mode</string>
 </resources>
