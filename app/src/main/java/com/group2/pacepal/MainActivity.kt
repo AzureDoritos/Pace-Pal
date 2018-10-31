@@ -24,11 +24,15 @@ class MainActivity : AppCompatActivity() {
     private val mOnNavigationItemSelectedListener = BottomNavigationView.OnNavigationItemSelectedListener { item ->
         when (item.itemId) {
             R.id.navigation_friends -> {
-
+                toolbar.title = "Friends"
+                val friendsFragment = FriendsFragment.newInstance()
+                openFragment(friendsFragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_home -> {
-
+                toolbar.title = "Home"
+                val sessionFragment = SessionFragment.newInstance()
+                openFragment(sessionFragment)
                 return@OnNavigationItemSelectedListener true
             }
             R.id.navigation_profile -> {
