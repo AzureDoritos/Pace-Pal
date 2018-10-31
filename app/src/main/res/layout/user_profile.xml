@@ -40,7 +40,7 @@
         android:id="@+id/imageView4"
         android:layout_width="117dp"
         android:layout_height="121dp"
-        app:srcCompat="@drawable/Circle"
+        app:srcCompat="@drawable/circle"
         tools:layout_editor_absoluteX="267dp"
         tools:layout_editor_absoluteY="284dp" />
 
@@ -48,7 +48,7 @@
         android:id="@+id/imageView3"
         android:layout_width="117dp"
         android:layout_height="121dp"
-        app:srcCompat="@drawable/Circle"
+        app:srcCompat="@drawable/circle"
         tools:layout_editor_absoluteX="134dp"
         tools:layout_editor_absoluteY="284dp" />
 
@@ -61,7 +61,7 @@
         android:id="@+id/imageView"
         android:layout_width="210dp"
         android:layout_height="293dp"
-        app:srcCompat="@drawable/Profile_Pic"
+        app:srcCompat="@drawable/profile_pic"
         tools:layout_editor_absoluteX="99dp"
         tools:layout_editor_absoluteY="39dp" />
 
@@ -79,7 +79,7 @@
         android:id="@+id/imageView2"
         android:layout_width="117dp"
         android:layout_height="121dp"
-        app:srcCompat="@drawable/Circle"
+        app:srcCompat="@drawable/circle"
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="284dp" />
 
@@ -120,7 +120,7 @@
         tools:text="5" />
 
     <Button
-        android:id="@+id/Edit Profile"
+        android:id="@+id/editProfile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Edit Profile"
