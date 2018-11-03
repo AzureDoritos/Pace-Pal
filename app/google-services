@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "585804179972",
+    "firebase_url": "https://pace-pal-ad8c4.firebaseio.com",
+    "project_id": "pace-pal-ad8c4",
+    "storage_bucket": "pace-pal-ad8c4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:585804179972:android:5c1c2ebe6f8a1e69",
+        "android_client_info": {
+          "package_name": "com.group2.pacepal"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "585804179972-0sskjs6240ijjul4eaqtbha9v2d8el19.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDtoBwXWlGYqCuFFJgTa_JGuwbnTR56ONg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
