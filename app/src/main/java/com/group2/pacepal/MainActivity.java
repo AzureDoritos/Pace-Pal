@@ -45,7 +45,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         setContentView(R.layout.activity_main);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.continue_button).setOnClickListener(this);
-        findViewById(R.id.continue_button).setVisibility(View.GONE);
+        findViewById(R.id.sign_out).setOnClickListener(this);
+        findViewById(R.id.continue_button).setVisibility(View.INVISIBLE);
+        findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -83,6 +85,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 break;
             case R.id.continue_button:
                 toMenu();
+                break;
+            case R.id.sign_out:
+                signOut();
+                break;
         }
     }
 
@@ -109,6 +115,16 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        updateUI(null);
+                    }
+                });
+    }
+
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -128,9 +144,13 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         if(account != null) {
             //user has account
             findViewById(R.id.continue_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
         } else {
             //user does not have an account yet
             //display google sign in button
+            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_out).setVisibility(View.INVISIBLE);
         }
     }
 
