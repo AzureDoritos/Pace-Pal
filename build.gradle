@@ -23,6 +23,17 @@ allprojects {
     }
 }
 
+compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    
+repositories {
+  mavenCentral()
+}
+
+  implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:6.7.0'
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
