@@ -54,7 +54,7 @@
         android:layout_marginTop="7dp"
         android:layout_marginEnd="144dp"
         android:layout_marginBottom="16dp"
-        android:text="Siign Out"
+        android:text="Sign Out"
         app:layout_constraintBottom_toTopOf="@+id/continue_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
