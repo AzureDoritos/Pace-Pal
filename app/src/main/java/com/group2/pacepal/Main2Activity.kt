@@ -61,6 +61,10 @@ class Main2Activity : AppCompatActivity() {
         val navigation: BottomNavigationView = findViewById(R.id.navigationView)
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        val sessionFragment = SessionFragment.newInstance()
+        openFragment(sessionFragment)
+
     }
 
 
