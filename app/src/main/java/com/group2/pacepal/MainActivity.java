@@ -29,6 +29,13 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+// Mapbox Imports
+
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.maps.MapView;
+
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
+    private MapView mapView;
 
     //GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
     // Build a GoogleSignInClient with the options specified by gso.
@@ -55,6 +63,9 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         super.onCreate(savedInstanceState);
         // Initialize Firebase Auth
         mAuth = FirebaseAuth.getInstance();
+        // Initialize MapBox Auth
+        Mapbox.getInstance(this, "pk.eyJ1IjoibWFyaXNzYXBhbG9zIiwiYSI6ImNqb3FmNW9jYTA0ZTgzcW5oeTM5enVzdTgifQ.UKW-2-rZg6l5frL0-9Cl2Q");
+
         setContentView(R.layout.activity_main);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.continue_button).setOnClickListener(this);
@@ -71,6 +82,10 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+        //Mapbox Stuff
+        mapView = (MapView) findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
     }
 
     /*
@@ -115,6 +130,42 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
+        mapView.onStart(); //MapBox
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume(); //MapBox
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause(); //MapBox
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop(); //MapBox
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory(); //MapBox
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy(); //MapBox
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState); //MapBox
     }
 
     @Override
