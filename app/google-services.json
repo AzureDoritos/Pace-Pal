@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "585804179972-rjp36563e6k5qqvgj4hf1sqvdct53jls.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.group2.pacepal",
+            "certificate_hash": "eea771316eaae097b1cc9f6a22ab06cb2af99158"
+          }
+        },
+        {
           "client_id": "585804179972-0sskjs6240ijjul4eaqtbha9v2d8el19.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "585804179972-1ff5a1k8j68082icri5adilt8lkgjvi1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

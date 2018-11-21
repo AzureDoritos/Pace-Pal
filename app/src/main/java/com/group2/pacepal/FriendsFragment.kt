@@ -9,7 +9,7 @@ import android.view.ViewGroup
 class FriendsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.activity_main, container, false)
+            inflater.inflate(R.layout.activity_main2, container, false)
 
     companion object {
         fun newInstance(): FriendsFragment = FriendsFragment()

@@ -8,7 +8,7 @@ import android.support.v7.app.AppCompatActivity
 import com.group2.pacepal.R.menu.navigation
 import kotlinx.android.synthetic.main.main_menu.*
 
-class MainActivity : AppCompatActivity() {
+class Main2Activity : AppCompatActivity() {
 
 
     lateinit var toolbar: ActionBar
@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity() {
                 openFragment(profileFragment)
                 return@OnNavigationItemSelectedListener true
             }
+
+
         }
         false
     }
@@ -59,6 +61,10 @@ class MainActivity : AppCompatActivity() {
         val navigation: BottomNavigationView = findViewById(R.id.navigationView)
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
+
+        val sessionFragment = SessionFragment.newInstance()
+        openFragment(sessionFragment)
+
     }
 
 
