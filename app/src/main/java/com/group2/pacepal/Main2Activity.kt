@@ -7,6 +7,9 @@ import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
 import com.group2.pacepal.R.menu.navigation
 import kotlinx.android.synthetic.main.main_menu.*
+import com.google.firebase.firestore.FirebaseFirestore
+
+
 
 class Main2Activity : AppCompatActivity() {
 
