@@ -36,9 +36,9 @@ class ProfileFragment : Fragment() {
         //val tv = findViewById(R.id.profileUsername) as TextView
         //tv.text = "this string is set dynamically from java code"
 
-        val useruid = user!!.uid
+        val userid = user!!.uid
 
-        val docRef = db.collection("users").document(useruid)
+        val docRef = db.collection("users").document(userid)
         docRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val currentProfile = task.result
@@ -50,7 +50,7 @@ class ProfileFragment : Fragment() {
 
 
 
-                    db.collection("users").document(useruid).collection("friends:").get().addOnCompleteListener { task ->
+                    db.collection("users").document(userid).collection("friends:").get().addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             profileFriends.text = task.result!!.size().toString()
 
