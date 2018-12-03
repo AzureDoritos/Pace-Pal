@@ -61,10 +61,10 @@
         android:id="@+id/imageView4"
         android:layout_width="117dp"
         android:layout_height="121dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileUsername"
+        app:layout_constraintTop_toBottomOf="@+id/profileRealName"
         app:srcCompat="@drawable/circle_profile_stats" />
 
     <ImageView
@@ -72,12 +72,12 @@
         android:layout_width="124dp"
         android:layout_height="120dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toStartOf="@+id/imageView4"
-        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintHorizontal_bias="0.4"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/profileUsername"
+        app:layout_constraintTop_toBottomOf="@+id/profileRealName"
         app:srcCompat="@drawable/circle_profile_stats" />
 
     <ImageView
@@ -111,13 +111,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:fontFamily="sans-serif"
         android:text="TextView"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView"
         tools:text=" " />
@@ -126,10 +124,10 @@
         android:id="@+id/imageView2"
         android:layout_width="117dp"
         android:layout_height="121dp"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/profileUsername"
+        app:layout_constraintTop_toBottomOf="@+id/profileRealName"
         app:srcCompat="@drawable/circle_profile_stats" />
 
     <TextView
@@ -192,6 +190,18 @@
         android:id="@+id/group4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/profileRealName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text=" "
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profileUsername" />
 
 
 </android.support.constraint.ConstraintLayout>

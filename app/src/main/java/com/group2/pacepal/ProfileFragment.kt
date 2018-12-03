@@ -47,6 +47,8 @@ class ProfileFragment : Fragment() {
                     profileUsername.text = currentProfile.getString("username")
                     profileMiles.text = currentProfile.getDouble("miles").toString()
                     profileChallenges.text = currentProfile.get("challenges").toString()
+                    profileRealName.text = currentProfile.get("first").toString() + " " + currentProfile.get("last").toString()
+
 
 
                     val firebasedb = db.collection("users").document(userid).collection("friends")
@@ -68,11 +70,13 @@ class ProfileFragment : Fragment() {
                     profileUsername.text = "NaNa"
                     profileMiles.text = "NaNa"
                     profileChallenges.text = "NaNa"
+                    profileRealName.text = "NaNa"
                 }
             } else {
                 profileUsername.text = "Na"
                 profileMiles.text = "Na"
                 profileChallenges.text = "Na"
+                profileRealName.text = "Na"
             }
         }
 
