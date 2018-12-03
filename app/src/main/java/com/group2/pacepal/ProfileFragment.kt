@@ -36,9 +36,9 @@ class ProfileFragment : Fragment() {
         //val tv = findViewById(R.id.profileUsername) as TextView
         //tv.text = "this string is set dynamically from java code"
 
-        val useruid = user!!.uid
+        val userid = user!!.uid
 
-        val docRef = db.collection("users").document(useruid)
+        val docRef = db.collection("users").document(userid)
         docRef.get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val currentProfile = task.result
@@ -47,13 +47,19 @@ class ProfileFragment : Fragment() {
                     profileUsername.text = currentProfile.getString("username")
                     profileMiles.text = currentProfile.getDouble("miles").toString()
                     profileChallenges.text = currentProfile.get("challenges").toString()
+                    profileRealName.text = currentProfile.get("first").toString() + " " + currentProfile.get("last").toString()
 
 
 
-                    db.collection("users").document(useruid).collection("friends:").get().addOnCompleteListener { task ->
+                    val firebasedb = db.collection("users").document(userid).collection("friends")
+                    firebasedb.get().addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            profileFriends.text = task.result!!.size().toString()
-
+                            var friendsCount = 0
+                            //profileFriends.text = task.result!!.size().toString()
+                            for (document in task.result!!) {
+                                friendsCount++
+                            }
+                            profileFriends.text = friendsCount.toString()
                         } else {
                             profileFriends.text = "Na"
                         }
@@ -64,11 +70,13 @@ class ProfileFragment : Fragment() {
                     profileUsername.text = "NaNa"
                     profileMiles.text = "NaNa"
                     profileChallenges.text = "NaNa"
+                    profileRealName.text = "NaNa"
                 }
             } else {
                 profileUsername.text = "Na"
                 profileMiles.text = "Na"
                 profileChallenges.text = "Na"
+                profileRealName.text = "Na"
             }
         }
 

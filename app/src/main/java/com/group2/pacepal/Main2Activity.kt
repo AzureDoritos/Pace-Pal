@@ -68,6 +68,8 @@ class Main2Activity : AppCompatActivity() {
         val sessionFragment = SessionFragment.newInstance()
         openFragment(sessionFragment)
 
+
+
     }
 
 
