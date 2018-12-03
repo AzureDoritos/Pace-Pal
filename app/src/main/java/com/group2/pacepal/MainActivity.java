@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.auth.api.Auth;
@@ -28,12 +30,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -44,6 +53,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Map<String, Object> data = new HashMap<>();
 
     //GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
     // Build a GoogleSignInClient with the options specified by gso.
@@ -59,8 +70,14 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.continue_button).setOnClickListener(this);
         findViewById(R.id.sign_out).setOnClickListener(this);
+        findViewById(R.id.submitButton).setOnClickListener(this);
         findViewById(R.id.continue_button).setVisibility(View.INVISIBLE);
         findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
+        findViewById(R.id.fnameField).setVisibility(View.INVISIBLE);
+        findViewById(R.id.lnameField).setVisibility(View.INVISIBLE);
+        findViewById(R.id.unameField).setVisibility(View.INVISIBLE);
+        findViewById(R.id.submitButton).setVisibility(View.INVISIBLE);
+
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -102,11 +119,68 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             case R.id.sign_out:
                 signOut();
                 break;
+            case R.id.submitButton:
+                toMenuSubmit();
+                break;
+
         }
     }
 
     public void toMenu() {
         startActivity(new Intent(MainActivity.this, Main2Activity.class));
+    }
+
+    public void toMenuSubmit() {
+        EditText fName = findViewById(R.id.fnameField);
+        EditText lName = findViewById(R.id.lnameField);
+        EditText uName = findViewById(R.id.unameField);
+        final boolean[] usernameExists = new boolean[1];
+
+        if((fName.getText().toString() != "") && (lName.getText().toString() != "") && (uName.getText().toString() != ""))
+        {
+            String userid = mAuth.getInstance().getCurrentUser().getUid();
+            Toast.makeText(this,userid,Toast.LENGTH_SHORT);
+            Map<String, Object> data = new HashMap<>();
+
+            data.put("first", fName.getText().toString());
+            data.put("last", lName.getText().toString());
+            data.put("username", uName.getText().toString());
+            data.put("miles", 0);
+            data.put("friends",0);
+            data.put("challenges",0);
+            data.put("profilepic", "url");
+
+            db.collection("users")
+                    .whereEqualTo("username", uName.getText().toString())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    usernameExists[0] = true;
+                                }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+            if(usernameExists[0]){
+                Toast.makeText(this,"Username taken!", Toast.LENGTH_SHORT);
+            }
+            else
+            {
+                db.collection("users").document(userid).set(data);
+                toMenu();
+            }
+
+
+
+        }
+
+
+
     }
 
     @Override
@@ -155,9 +229,36 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     private void updateUI(FirebaseUser account) {
         if (account != null) {
             //user has account
-            findViewById(R.id.continue_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
+
             findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
+            String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+            DocumentReference docRef = db.collection("users").document(userid);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                            findViewById(R.id.continue_button).setVisibility(View.VISIBLE);
+                            findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
+                        } else {
+                            Log.d(TAG, "No such document");
+                            findViewById(R.id.fnameField).setVisibility(View.VISIBLE);
+                            findViewById(R.id.lnameField).setVisibility(View.VISIBLE);
+                            findViewById(R.id.unameField).setVisibility(View.VISIBLE);
+                            findViewById(R.id.submitButton).setVisibility(View.VISIBLE);
+
+
+
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+
         } else {
             //user does not have an account yet
             //display google sign in button

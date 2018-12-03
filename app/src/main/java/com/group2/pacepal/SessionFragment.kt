@@ -97,7 +97,7 @@ class SessionFragment : Fragment() {
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         if (task.result!!.size() == 0)
-                            Toast.makeText(context, "You need friends first.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "No friends found.", Toast.LENGTH_SHORT).show()
                         for (document in task.result!!) {
                             //invitesList.add(Invite(document.id, document.id, document.id))
                             inviteRefrence = FirebaseDatabase.getInstance().reference
