@@ -49,11 +49,15 @@ class ProfileFragment : Fragment() {
                     profileChallenges.text = currentProfile.get("challenges").toString()
 
 
-
-                    db.collection("users").document(userid).collection("friends:").get().addOnCompleteListener { task ->
+                    val firebasedb = db.collection("users").document(userid).collection("friends")
+                    firebasedb.get().addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            profileFriends.text = task.result!!.size().toString()
-
+                            var friendsCount = 0
+                            //profileFriends.text = task.result!!.size().toString()
+                            for (document in task.result!!) {
+                                friendsCount++
+                            }
+                            profileFriends.text = friendsCount.toString()
                         } else {
                             profileFriends.text = "Na"
                         }
