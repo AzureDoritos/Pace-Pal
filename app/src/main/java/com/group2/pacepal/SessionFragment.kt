@@ -38,9 +38,10 @@ class SessionFragment : Fragment() {
     private val userid = user!!.uid
     private val invitesList = ArrayList<Invite>(0)
     private val adapter = RecyclerAdapter1(invitesList)
+    private val rtdb = FirebaseDatabase.getInstance().reference
 
     private lateinit var inviteRefrence: DatabaseReference
-    private var sesListener: ValueEventListener? = null
+
 
     private lateinit var linearLayoutManager:LinearLayoutManager
 
@@ -51,18 +52,14 @@ class SessionFragment : Fragment() {
         val invView = view?.findViewById(R.id.sessionInvites) as RecyclerView
         invView.layoutManager = LinearLayoutManager(this.context)
 
-
-
-
-
-
-
         invView.adapter = adapter
 
-
         val refreshButton = view.findViewById<Button>(R.id.inviteRefresh)
-        refreshButton.setOnClickListener {refreshInvites() }
+        refreshButton.setOnClickListener { refreshInvites() }
+
         refreshInvites()
+
+
 
 
         return view
@@ -88,10 +85,11 @@ class SessionFragment : Fragment() {
             //}
         }
     }
-    private fun refreshInvites() {
 
-        //Toast.makeText(context, "Getting invites..", Toast.LENGTH_SHORT).show()
-        //invitesList.clear()
+
+    private fun refreshInvites() {
+        invitesList.clear()
+        //inviteRefresh.text = "loading.."
         val friendsList = fsdb.collection("users").document(userid).collection("friends")
         friendsList.get()
                 .addOnCompleteListener { task ->
@@ -99,91 +97,40 @@ class SessionFragment : Fragment() {
                         if (task.result!!.size() == 0)
                             Toast.makeText(context, "You need friends first.", Toast.LENGTH_SHORT).show()
                         for (document in task.result!!) {
-                            invitesList.add(Invite(document.id, document.id, document.id))
+                            //invitesList.add(Invite(document.id, document.id, document.id))
                             inviteRefrence = FirebaseDatabase.getInstance().reference
-                                    //.child("sessionManager").child("sessionIndex").child(document.id)
 
-                            inviteRefrence.child("sessionManager").child("sessionIndex").child(document.id)
-                                    .addListenerForSingleValueEvent(object : ValueEventListener
-                                    {
-                                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                            // Get Post object and use the values to update the UI
-                                            val friendSes = dataSnapshot.getValue(SessionMetadata::class.java)
-                                            // [START_EXCLUDE]
-                                            if (friendSes!!.P2 == userid) {
-                                                val host = fsdb.collection("users").document(document.id)
-                                                host.get().addOnSuccessListener { hostProfile ->
-                                                    val hostUsername = hostProfile.getString("username").toString()
-                                                    val hostUID = document.id
-                                                    val sessionType = friendSes!!.type
-                                                    invitesList.add(Invite(hostUsername, hostUID, sessionType))
-                                                }
-                                            }
-                                            // [END_EXCLUDE]
-                                        }
-
-                                        override fun onCancelled(databaseError: DatabaseError) {
-                                            // Getting Post failed, log a message
-                                            // [START_EXCLUDE]
-                                            // [END_EXCLUDE]
-                                        }
-                                    }
-
-                                    )
-
-
-
-                            /*val sesListener = object : ValueEventListener {
+                            val invListener = object : ValueEventListener {
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    // Get Post object and use the values to update the UI
-                                    val inv = dataSnapshot.getValue(SessionMetadata::class.java)
-                                    // [START_EXCLUDE]
-                                    if (inv!!.P2 == userid) {
+                                    //invScan.clear()
+                                    //dataSnapshot.mapNotNullTo(invScan) { it.getValue<SessionMetadata>(SessionMetadata::class.java) }
+                                    //Toast.makeText(context,dataSnapshot.child("P2").toString(),Toast.LENGTH_SHORT)
+                                    //invitesList.add(Invite(document.id, document.id, dataSnapshot.child("P2").toString()))
+                                    if(dataSnapshot.child("P2").value.toString() == userid) {
+
                                         val host = fsdb.collection("users").document(document.id)
                                         host.get().addOnSuccessListener { hostProfile ->
                                             val hostUsername = hostProfile.getString("username").toString()
                                             val hostUID = document.id
-                                            val sessionType = inv!!.type
-                                            invitesList.add(Invite(hostUsername, hostUID, sessionType))
-                                        }
+                                            var sessionType = dataSnapshot.child("type").value.toString()
+                                            if(sessionType != "0") {
+                                                if(sessionType == "1") sessionType = "Competitive"
+                                                if(sessionType == "2") sessionType = "Collaborative"
+                                                if(sessionType == "3") sessionType = "Social"
+
+                                                invitesList.add(Invite(hostUsername, hostUID, sessionType))
+                                                adapter.notifyDataSetChanged()
+                                            }
                                     }
-                                    // [END_EXCLUDE]
-                                }
+
+                                }}
 
                                 override fun onCancelled(databaseError: DatabaseError) {
-                                    // Getting Post failed, log a message
-                                    // [START_EXCLUDE]
-                                    // [END_EXCLUDE]
+                                    println("loadPost:onCancelled ${databaseError.toException()}")
                                 }
-                            }
-                            //sessionRefrence.addValueEventListener(sesListener)
+                           }
 
-
-
-                            FirebaseDatabase.getInstance().reference.child("sessionManager").child("sessionIndex").child(document.id)
-                                    .addListenerForSingleValueEvent(object : ValueEventListener {
-                                        override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                            // Get user information
-                                            val sessionInstance = dataSnapshot.getValue(SessionMetadata::class.java)
-                                                    ?: return
-                                            Toast.makeText(context,sessionInstance.P2,Toast.LENGTH_SHORT)
-                                            if (sessionInstance.P2 == userid) {
-                                                val host = fsdb.collection("users").document(document.id)
-                                                host.get().addOnSuccessListener { hostProfile ->
-                                                    val hostUsername = hostProfile.getString("username").toString()
-                                                    val hostUID = document.id
-                                                    val sessionType = sessionInstance.type
-                                                    invitesList.add(Invite(hostUsername, hostUID, sessionType))
-                                            }
-                                        }}
-
-
-                                        override fun onCancelled(databaseError: DatabaseError) {
-                                        }
-
-                                    })*/
-
-
+                            rtdb.child("sessionManager").child("sessionIndex").child(document.id).addListenerForSingleValueEvent(invListener)
 
                             }
 
