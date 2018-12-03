@@ -11,5 +11,7 @@ class SessionActivity : AppCompatActivity() {
 
         val sessionId = intent.getStringExtra("sessionID")
 
+
+
     }
 }
