@@ -25,6 +25,8 @@
         </activity>
         <activity android:name=".Main2Activity">
         </activity>
+        <activity android:name=".SessionActivity">
+        </activity>
     </application>
 
 </manifest>
