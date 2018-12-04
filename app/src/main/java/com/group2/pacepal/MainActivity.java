@@ -84,10 +84,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-        //testing . It does check for a user here and allows you to be prompted sign in info if you do not have an account. But shouldn't be here, most likely
-        // FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        // updateUI(currentUser);
     }
 
     @Override
@@ -114,8 +110,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        updateUI(currentUser);
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
     }
 
     @Override
