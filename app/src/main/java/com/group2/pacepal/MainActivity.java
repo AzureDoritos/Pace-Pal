@@ -46,6 +46,7 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
+    private MapView mapView;
     private SignInButton signIn;
     private TextView Name, Email;
     private GoogleApiClient mGoogleApiClient;
@@ -73,6 +74,11 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         findViewById(R.id.unameField).setVisibility(View.INVISIBLE);
         findViewById(R.id.submitButton).setVisibility(View.INVISIBLE);
         findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+
+        //MapBox
+        Mapbox.getInstance(context:this, getString(R.string.access_token));
+        mapView = (MapView) findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -112,6 +118,43 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         // Check if user is signed in (non-null) and update UI accordingly.
         //FirebaseUser currentUser = mAuth.getCurrentUser();
         //updateUI(currentUser);
+        mapView.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
     }
 
     @Override

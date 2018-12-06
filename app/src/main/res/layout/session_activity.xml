@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/sessionHolder"
-        android:layout_width="395dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.49">
-
-    </FrameLayout>
+   <com.mapbox.mapboxsdk.maps.MapView
+       android:id="@+id/mapView"
+       android:layout_width="match_parent"
+       android:layout_height="match_parent"
+       mapbox:mapbox_cameraTargetLat = "37.7749"
+       mapbox:mapbox_cameraTargetLng = "-122.4194"
+       mapbox:mapbox_styleUrl="mapbox://styles/mapbox/streets-v10"
+       mapbox:mapbox_cameraZoom="12"
+       />
 </android.support.constraint.ConstraintLayout>
