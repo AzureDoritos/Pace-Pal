@@ -9,9 +9,12 @@
     <FrameLayout
         android:id="@+id/sessionHolder"
         android:layout_width="395dp"
-        android:layout_height="587dp"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="8dp">
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.49">
 
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>
