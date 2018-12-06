@@ -1,6 +1,7 @@
 package com.group2.pacepal
 
 import android.app.ActionBar
+import android.content.Intent
 import android.os.Bundle
 import android.se.omapi.Session
 import android.support.v4.app.Fragment
@@ -90,12 +91,13 @@ class SessionFragment : Fragment() {
     private fun refreshInvites() {
         invitesList.clear()
         //inviteRefresh.text = "loading.."
+        val intentContext = this.context!!
         val friendsList = fsdb.collection("users").document(userid).collection("friends")
         friendsList.get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         if (task.result!!.size() == 0)
-                            Toast.makeText(context, "You need friends first.", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "No friends found.", Toast.LENGTH_SHORT).show()
                         for (document in task.result!!) {
                             //invitesList.add(Invite(document.id, document.id, document.id))
                             inviteRefrence = FirebaseDatabase.getInstance().reference
@@ -118,7 +120,7 @@ class SessionFragment : Fragment() {
                                                 if(sessionType == "2") sessionType = "Collaborative"
                                                 if(sessionType == "3") sessionType = "Social"
 
-                                                invitesList.add(Invite(hostUsername, hostUID, sessionType))
+                                                invitesList.add(Invite(hostUsername, hostUID, sessionType,intentContext))
                                                 adapter.notifyDataSetChanged()
                                             }
                                     }
@@ -145,6 +147,13 @@ class SessionFragment : Fragment() {
 
 
     }
+
+    /*fun toSession(sessionID: String) {
+        val intent = Intent(this.context, SessionActivity::class.java)
+        intent.putExtra("sessionID", sessionID)
+        startActivity(intent)
+
+    } */
 
     //data class Invite (val host: String, val hostID: String, val type: String)
 
