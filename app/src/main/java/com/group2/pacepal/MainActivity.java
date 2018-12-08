@@ -136,21 +136,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                     }
                 });
     }
-/*
-    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
-        try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            String idToken = account.getIdToken();
-
-            // Signed in successfully, show authenticated UI.
-            updateUI(account);
-        } catch (ApiException e) {
-            // The ApiException status code indicates the detailed failure reason.
-            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            updateUI(null);
-        }
-    } */
 
     private void updateUI(FirebaseUser account) {
         if (account != null) {
