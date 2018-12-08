@@ -25,7 +25,7 @@ class FriendsFragment : Fragment() {
     private val userid = user!!.uid
     private val friendsList = ArrayList<Friend>(0)
     private val adapter = FriendsAdapter(friendsList)
-    private val rtdb = FirebaseDatabase.getInstance().reference
+    //private val rtdb = FirebaseDatabase.getInstance().reference
 
     private lateinit var friendReference: DatabaseReference
 
@@ -65,16 +65,29 @@ class FriendsFragment : Fragment() {
         friendsList.clear() //starting here on updates
         //inviteRefresh.text = "loading.."
         val intentContext = this.context!!
-        val friendsList = fsdb.collection("users").document(userid).collection("friends")
-        friendsList.get()
+        val friendsFromFS = fsdb.collection("users").document(userid).collection("friends")
+        friendsFromFS.get()
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
                         if (task.result!!.size() == 0)
                             Toast.makeText(context, "You need to add friends before you can ever have a list of them.", Toast.LENGTH_SHORT).show()
                         for (document in task.result!!) {
-                            //invitesList.add(Invite(document.id, document.id, document.id))
-                            friendReference = FirebaseDatabase.getInstance().reference
 
+                            val friendGet = fsdb.collection("users").document(document.id)
+                            friendGet.get().addOnSuccessListener { friendProfile ->
+
+                                friendsList.add(Friend(
+                                        "https://firebasestorage.googleapis.com/v0/b/pace-pal-ad8c4.appspot.com/o/defaultAVI.png?alt=media&token=6c9c47df-8151-4e5b-8843-3440e317346c",
+                                        friendProfile.getString("username").toString(),
+                                        friendProfile.getString("first") + " " + friendProfile.getString("last"),
+                                        document.id,
+                                        intentContext
+                                ))
+                                adapter.notifyDataSetChanged()
+
+                            }
+
+                            /*
                             val friendListener = object : ValueEventListener {
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
                                     //invScan.clear()
@@ -90,14 +103,14 @@ class FriendsFragment : Fragment() {
                                             }
 
 
-                                    }}
+                                    }
 
                                 override fun onCancelled(databaseError: DatabaseError) {
                                     println("loadPost:onCancelled ${databaseError.toException()}")
                                 }
-                            }
+                            } */
 
-                            rtdb.child("sessionManager").child("sessionIndex").child(document.id).addListenerForSingleValueEvent(invListener)
+                            //rtdb.child("sessionManager").child("sessionIndex").child(document.id).addListenerForSingleValueEvent(invListener)
 
                         }
 
