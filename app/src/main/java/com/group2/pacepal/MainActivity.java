@@ -8,7 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.google.android.gms.auth.api.Auth;
@@ -28,12 +30,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity  implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
 
@@ -44,11 +53,8 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "MainActivity";
     private FirebaseAuth mAuth;
-
-    //GoogleSignInOptions signInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestEmail().build();
-    // Build a GoogleSignInClient with the options specified by gso.
-    //mGoogleSignInClient = GoogleSignIn.getClient(this, signInOptions);
-    //GoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, this).addApi(Auth.GOOGLE_SIGN_IN_API, signInOptions);
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Map<String, Object> data = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +65,15 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         findViewById(R.id.sign_in_button).setOnClickListener(this);
         findViewById(R.id.continue_button).setOnClickListener(this);
         findViewById(R.id.sign_out).setOnClickListener(this);
+        findViewById(R.id.submitButton).setOnClickListener(this);
         findViewById(R.id.continue_button).setVisibility(View.INVISIBLE);
-        findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
+        findViewById(R.id.sign_out).setVisibility(View.INVISIBLE);
+        findViewById(R.id.fnameField).setVisibility(View.INVISIBLE);
+        findViewById(R.id.lnameField).setVisibility(View.INVISIBLE);
+        findViewById(R.id.unameField).setVisibility(View.INVISIBLE);
+        findViewById(R.id.submitButton).setVisibility(View.INVISIBLE);
+        findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -73,23 +86,6 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
     }
 
-    /*
-        private void refreshIdToken() {
-            // Attempt to silently refresh the GoogleSignInAccount. If the GoogleSignInAccount
-            // already has a valid token this method may complete immediately.
-            //
-            // If the user has not previously signed in on this device or the sign-in has expired,
-            // this asynchronous branch will attempt to sign in the user silently and get a valid
-            // ID token. Cross-device single sign on will occur in this branch.
-            mGoogleSignInClient.silentSignIn()
-                    .addOnCompleteListener(this, new OnCompleteListener<GoogleSignInAccount>() {
-                        @Override
-                        public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                            handleSignInResult(task);
-                        }
-                    });
-        }
-     */
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -102,29 +98,25 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             case R.id.sign_out:
                 signOut();
                 break;
+            case R.id.submitButton:
+                toMenuSubmit();
+                break;
+
         }
     }
 
-    public void toMenu() {
-        startActivity(new Intent(MainActivity.this, Main2Activity.class));
-    }
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
-    }
-
-    private void signIn() {
-        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     private void signOut() {
@@ -137,33 +129,13 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                 });
     }
 
-    private void updateUI(FirebaseUser account) {
-        if (account != null) {
-            //user has account
-            findViewById(R.id.continue_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
-        } else {
-            //user does not have an account yet
-            //display google sign in button
-            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out).setVisibility(View.INVISIBLE);
-        }
+    //sign in flow starts here
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    /*
-        @Override
-        public void onActivityResult (int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode,data);
-            // The Task returned from this call is always completed, no need to attach
-            // a listener.
-            if(requestCode == RC_SIGN_IN) {
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                handleSignInResult(task);
-
-            }
-        }
-     */
+    //second step of signing in
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -183,7 +155,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
         }
     }
 
-
+    //third step of signing in
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
@@ -208,5 +180,113 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
                     }
                 });
     }
+
+    //fourth step of signing in
+    private void updateUI(FirebaseUser account) {
+        if (account != null) {
+            //user has account
+
+            findViewById(R.id.sign_in_button).setVisibility(View.INVISIBLE);
+            String userid = FirebaseAuth.getInstance().getCurrentUser().getUid(); //may need to switch back to acquiring a new instance altogether
+
+            //Attempt to grab the UID from the firestore database and then check if that retrieval was successful and respond accordingly
+            DocumentReference docRef = db.collection("users").document(userid);
+            docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()) {
+                        DocumentSnapshot document = task.getResult();
+                        if (document.exists()) {
+                            Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                            findViewById(R.id.continue_button).setVisibility(View.VISIBLE);
+                            findViewById(R.id.sign_out).setVisibility(View.VISIBLE);
+                        } else {
+                            Log.d(TAG, "No such document");
+                            findViewById(R.id.fnameField).setVisibility(View.VISIBLE);
+                            findViewById(R.id.lnameField).setVisibility(View.VISIBLE);
+                            findViewById(R.id.unameField).setVisibility(View.VISIBLE);
+                            findViewById(R.id.submitButton).setVisibility(View.VISIBLE);
+
+
+
+                        }
+                    } else {
+                        Log.d(TAG, "get failed with ", task.getException());
+                    }
+                }
+            });
+
+        } else {
+            //user does not have an account yet
+            //display google sign in button to start the sign in flow that brings the user back to this function
+            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+            //findViewById(R.id.sign_out).setVisibility(View.INVISIBLE);
+        }
+    }
+
+    //after hitting the continue button to sign in. This takes us to the main menu
+    public void toMenu() {
+        startActivity(new Intent(MainActivity.this, Main2Activity.class));
+    }
+
+
+    //after hitting the submit button to send user information to the firestore realtime database
+    //submit shouldn't send user to main menu unless they are already signed in, which at this point it does anyways. Need to fix
+    public void toMenuSubmit() {
+        EditText fName = (EditText)findViewById(R.id.fnameField);
+        EditText lName = (EditText) findViewById(R.id.lnameField);
+        EditText uName = (EditText) findViewById(R.id.unameField);
+        final boolean[] usernameExists = new boolean[1];
+
+        if((fName.getText().toString().matches("") == false) && (lName.getText().toString().matches("") == false) && (uName.getText().toString().matches("") == false))
+        {
+            String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            Toast.makeText(this,userid,Toast.LENGTH_SHORT).show();
+            Map<String, Object> data = new HashMap<>();
+
+            data.put("first", fName.getText().toString());
+            data.put("last", lName.getText().toString());
+            data.put("username", uName.getText().toString());
+            data.put("miles", 0);
+            data.put("friends",0);
+            data.put("challenges",0);
+            data.put("profilepic", "url");
+
+            db.collection("users")
+                    .whereEqualTo("username", uName.getText().toString())
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    Log.d(TAG, document.getId() + " => " + document.getData());
+                                    usernameExists[0] = true;
+                                }
+                            } else {
+                                Log.d(TAG, "Error getting documents: ", task.getException());
+                            }
+                        }
+                    });
+            if(usernameExists[0]){
+                Toast.makeText(this,"Username taken!", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                db.collection("users").document(userid).set(data);
+                toMenu();
+            }
+
+
+
+        } else {
+            Toast.makeText(this, "All fields required", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+    }
+
+
 
 }

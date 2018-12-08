@@ -12,6 +12,11 @@ import kotlinx.android.synthetic.main.inviteview_row_item.view.*
 
 import kotlinx.android.synthetic.main.session_menu.view.*
 import android.support.v4.content.ContextCompat.startActivity
+import android.R.id.edit
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
+
+
 
 
 
@@ -50,10 +55,13 @@ class RecyclerAdapter1 (private val invites: ArrayList<Invite>)  : RecyclerView.
             this.invite = invite
             val displayText = invite.host + " : " + invite.type
             view.inviteButton.text = displayText
+            val preferences = PreferenceManager.getDefaultSharedPreferences(invite.feature)
+            val editor = preferences.edit()
+            editor.putString("sessionID", invite.hostID)
+            editor.commit()
             view.inviteButton.setOnClickListener{
                 val parentContext = invite.feature
                 val intent = Intent(parentContext, SessionActivity::class.java)
-                intent.putExtra("sessionID", invite.hostID)
                 parentContext.startActivity(intent)
             }
 
