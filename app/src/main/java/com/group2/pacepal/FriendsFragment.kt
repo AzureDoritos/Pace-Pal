@@ -16,10 +16,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class FriendsFragment : Fragment() {
 
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
-    private lateinit var viewManager: RecyclerView.LayoutManager
-
     private val fsdb = FirebaseFirestore.getInstance()
     private val user = FirebaseAuth.getInstance().currentUser
     private val userid = user!!.uid
