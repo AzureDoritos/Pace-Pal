@@ -48,10 +48,21 @@ class FriendsAdapter (private val friends: ArrayList<Friend>): RecyclerView.Adap
 
             Log.d("friendListUname", friend.userName)
             view.uName.text = friend.userName
-            Log.d("friendListRname", friend.userName)
+            Log.d("friendListRname", friend.realName)
             view.realName.text = friend.realName
 
             Picasso.with(view.context).load(friend.profilePictureURL).fit().into(view.profilePic)
+
+            view.friendSelection.setOnClickListener{
+                if(friend.activityType == 1){
+                    Toast.makeText(friend.feature,"TODO: open friend profile", Toast.LENGTH_SHORT).show()
+                }else if(friend.activityType == 2){
+
+                }
+            }
+
+
+
             //view.profilePic
             //val displayText = friend.userName
 

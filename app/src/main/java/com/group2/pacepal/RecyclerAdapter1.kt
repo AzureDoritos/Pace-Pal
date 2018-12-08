@@ -57,6 +57,8 @@ class RecyclerAdapter1 (private val invites: ArrayList<Invite>)  : RecyclerView.
                 parentContext.startActivity(intent)
             }
 
+
+
         }
     }
 }

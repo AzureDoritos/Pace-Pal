@@ -31,16 +31,19 @@ class FriendsFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val view = inflater.inflate(R.layout.activity_main2, container, false)
+        //inflates the layout xml to be displayed
+        val view = inflater.inflate(R.layout.friends_list, container, false)
 
+        //initializes the recyclerView with its adapter
         val invView = view?.findViewById(R.id.friendsList) as RecyclerView
         invView.layoutManager = LinearLayoutManager(this.context)
-
         invView.adapter = adapter
 
+        //refresh button to refresh friends list
         val refreshButton = view.findViewById<Button>(R.id.friendsRefresh)
         refreshButton.setOnClickListener { refreshFriends() }
 
+        //initial load of friends list
         refreshFriends()
         return view
     }
@@ -81,6 +84,7 @@ class FriendsFragment : Fragment() {
                                         friendProfile.getString("username").toString(),
                                         friendProfile.getString("first") + " " + friendProfile.getString("last"),
                                         document.id,
+                                        1,
                                         intentContext
                                 ))
                                 adapter.notifyDataSetChanged()
