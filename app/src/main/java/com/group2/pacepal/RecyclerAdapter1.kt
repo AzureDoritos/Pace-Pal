@@ -22,6 +22,7 @@ import android.preference.PreferenceManager
 
 
 class RecyclerAdapter1 (private val invites: ArrayList<Invite>)  : RecyclerView.Adapter<RecyclerAdapter1.InviteHolder>()  {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InviteHolder {
         val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.inviteview_row_item,parent,false)
         return InviteHolder(inflatedView)
@@ -63,6 +64,8 @@ class RecyclerAdapter1 (private val invites: ArrayList<Invite>)  : RecyclerView.
                 val intent = Intent(parentContext, SessionActivity::class.java)
                 parentContext.startActivity(intent)
             }
+
+
 
         }
     }

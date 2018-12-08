@@ -31,38 +31,34 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="7dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="18dp"
-        app:layout_constraintBottom_toTopOf="@+id/imageView7"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />
 
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="95dp"
-        android:layout_height="100dp"
-        android:layout_marginStart="21dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="323dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textView9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/searchView"
-        app:srcCompat="@drawable/mascot_1" />
-
-    <TextView
-        android:id="@+id/textView9"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/friendsRefresh"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginEnd="176dp"
-        android:layout_marginBottom="361dp"
-        android:text="Oregon Duck"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="8dp"
+        android:text="Refresh"
+        app:layout_constraintBottom_toTopOf="@+id/friendsList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- A RecyclerView with some commonly used attributes -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/friendsList"
+        android:layout_width="394dp"
+        android:layout_height="425dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="8dp"
+        android:background="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView7"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/searchView" />
 
 </android.support.constraint.ConstraintLayout>
