@@ -1,6 +1,10 @@
 package com.group2.pacepal
 
+import android.app.Activity
+import android.app.PendingIntent.getActivity
 import android.content.Intent
+import android.preference.PreferenceManager
+import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +12,8 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.friendview_row_item.view.*
 import android.widget.Toast
+import com.google.firebase.database.FirebaseDatabase
+import com.mapbox.mapboxsdk.Mapbox.getApplicationContext
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.user_profile.view.*
 import java.security.AccessController.getContext
@@ -57,7 +63,34 @@ class FriendsAdapter (private val friends: ArrayList<Friend>): RecyclerView.Adap
                 if(friend.activityType == 1){
                     Toast.makeText(friend.feature,"TODO: open friend profile", Toast.LENGTH_SHORT).show()
                 }else if(friend.activityType == 2){
+                    val rtdb = FirebaseDatabase.getInstance().reference
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(friend.feature.applicationContext)
+                    val sessionID = preferences.getString("sessionID", "")
+                    val sessionType = preferences.getString("sessionType","")
 
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("P2").setValue(friend.uid)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("type").setValue(sessionType)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady").setValue("false")
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p1Ready").setValue("false")
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p2Ready").setValue("false")
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1").setValue("")
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2").setValue("")
+
+
+
+                    val editor = preferences.edit()
+                    editor.remove("initState")
+                    editor.commit()
+                    editor.putBoolean("initState", true)
+                    editor.commit()
+
+
+                    val manager = (friend.feature as FragmentActivity)
+
+                    manager.supportFragmentManager.popBackStack()
+
+                    //val transaction =
+                    //getActivity(friend.feature).getSupportFragmentManager().beginTransaction().remove(friend.feature).commit()
                 }
             }
 

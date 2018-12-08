@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.readyup_fragment.*
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
 import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 
 
@@ -46,7 +47,7 @@ class ReadyUpFragment : Fragment() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this.context)
         val sessionID = preferences.getString("sessionID", "")
 
-
+        val palStatus = view.findViewById<TextView>(R.id.palStatus)
 
         var p1Ready = false
         var p2Ready = false
@@ -74,15 +75,21 @@ class ReadyUpFragment : Fragment() {
         val hostListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                if(dataSnapshot.child("ready").child("p2Ready").value.toString() == "true") {
-                    p2Ready = true
+                p2Ready = dataSnapshot.child("ready").child("p2Ready").value.toString().toBoolean()
+
+                if(p2Ready)
                     palStatus.text = "Ready"
-
-
-                } else{
+                else
                     palStatus.text = "Not Ready"
-                    p2Ready = false
 
+                if(p1Ready == buttonState) {
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady")
+                            .setValue(true)
+                    val editor = preferences.edit()
+                    editor.putBoolean("readyState", true)
+                    editor.commit()
+
+                    fragmentManager!!.popBackStack()
                 }
 
 
@@ -110,7 +117,10 @@ class ReadyUpFragment : Fragment() {
                 if(p1Ready == buttonState) {
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady")
                             .setValue(true)
-                    activity!!.onBackPressed()
+                    val editor = preferences.edit()
+                    editor.putBoolean("readyState", true)
+                    editor.commit()
+                    fragmentManager!!.popBackStack()
                 }
             }
 
@@ -119,13 +129,12 @@ class ReadyUpFragment : Fragment() {
             }
         }
 
-        Log.d("init readyUp session", sessionID)
-        Toast.makeText(context,sessionID,Toast.LENGTH_SHORT)
+        //Log.d("init readyUp session", sessionID)
+        //Toast.makeText(context,sessionID,Toast.LENGTH_SHORT)
         if(userid == sessionID)
             rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").addValueEventListener(hostListener)
         else {
             rtdb.child("sessionManager").child("sessionIndex").child(sessionID).addValueEventListener(p2Listener)
-
         }
 
     }

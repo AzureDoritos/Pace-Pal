@@ -3,6 +3,7 @@ package com.group2.pacepal
 import android.app.ActionBar
 import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.se.omapi.Session
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -41,6 +42,7 @@ class SessionFragment : Fragment() {
     private val adapter = RecyclerAdapter1(invitesList)
     private val rtdb = FirebaseDatabase.getInstance().reference
 
+
     private lateinit var inviteRefrence: DatabaseReference
 
 
@@ -49,6 +51,7 @@ class SessionFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
         val view = inflater.inflate(R.layout.session_menu, container, false)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
         val invView = view?.findViewById(R.id.sessionInvites) as RecyclerView
         invView.layoutManager = LinearLayoutManager(this.context)
@@ -57,6 +60,20 @@ class SessionFragment : Fragment() {
 
         val refreshButton = view.findViewById<Button>(R.id.inviteRefresh)
         refreshButton.setOnClickListener { refreshInvites() }
+
+        val socialButton = view.findViewById<Button>(R.id.socialCreate)
+        socialButton.setOnClickListener{
+            val editor = preferences.edit()
+            editor.putBoolean("readyState", false)
+            editor.putBoolean("initState", false)
+            editor.putString("sessionID", userid)
+            editor.putString("sessionType","3")
+            editor.putBoolean("friendInvited", false)
+            editor.commit()
+            val parentContext = context
+            val intent = Intent(parentContext, SessionActivity::class.java)
+            parentContext!!.startActivity(intent)
+        }
 
         refreshInvites()
 
