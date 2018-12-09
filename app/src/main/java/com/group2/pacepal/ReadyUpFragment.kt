@@ -14,7 +14,6 @@ import kotlinx.android.synthetic.main.readyup_fragment.*
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
 import android.util.Log
-import android.widget.TextView
 import android.widget.Toast
 
 
@@ -41,15 +40,13 @@ class ReadyUpFragment : Fragment() {
 
 
 
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-         /*
+
         val preferences = PreferenceManager.getDefaultSharedPreferences(this.context)
         val sessionID = preferences.getString("sessionID", "")
 
-        val palStatus = view.findViewById<TextView>(R.id.palStatus)
+
 
         var p1Ready = false
         var p2Ready = false
@@ -74,26 +71,18 @@ class ReadyUpFragment : Fragment() {
 
 
 
-
-
         val hostListener = object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
 
-                p2Ready = dataSnapshot.child("ready").child("p2Ready").value.toString().toBoolean()
-
-                if(p2Ready)
+                if(dataSnapshot.child("ready").child("p2Ready").value.toString() == "true") {
+                    p2Ready = true
                     palStatus.text = "Ready"
-                else
+
+
+                } else{
                     palStatus.text = "Not Ready"
+                    p2Ready = false
 
-                if(p1Ready == buttonState) {
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady")
-                            .setValue(true)
-                    val editor = preferences.edit()
-                    editor.putBoolean("readyState", true)
-                    editor.commit()
-
-                    fragmentManager!!.popBackStack()
                 }
 
 
@@ -121,10 +110,7 @@ class ReadyUpFragment : Fragment() {
                 if(p1Ready == buttonState) {
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady")
                             .setValue(true)
-                    val editor = preferences.edit()
-                    editor.putBoolean("readyState", true)
-                    editor.commit()
-                    fragmentManager!!.popBackStack()
+                    activity!!.onBackPressed()
                 }
             }
 
@@ -133,117 +119,15 @@ class ReadyUpFragment : Fragment() {
             }
         }
 
-        //Log.d("init readyUp session", sessionID)
-        //Toast.makeText(context,sessionID,Toast.LENGTH_SHORT)
+        Log.d("init readyUp session", sessionID)
+        Toast.makeText(context,sessionID,Toast.LENGTH_SHORT)
         if(userid == sessionID)
             rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").addValueEventListener(hostListener)
         else {
             rtdb.child("sessionManager").child("sessionIndex").child(sessionID).addValueEventListener(p2Listener)
-        } */
 
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        Log.d("readyUP", "resumed")
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this.context)
-        val sessionID = preferences.getString("sessionID", "")
-
-        val palStatus = view!!.findViewById<TextView>(R.id.palStatus)
-
-        var p1Ready = false
-        var p2Ready = false
-        var absReady = false
-
-        var buttonState = false
-
-
-        val readyClicker = readyButton
-
-        if (preferences.getBoolean("initState", false)) {
-            readyClicker.setOnClickListener {
-                buttonState = !buttonState
-
-                if (sessionID == userid)
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p1Ready")
-                            .setValue(buttonState)
-                else
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p2Ready")
-                            .setValue(buttonState)
-
-
-            }
         }
 
-
-
-
-
-        val hostListener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                p2Ready = dataSnapshot.child("ready").child("p2Ready").value.toString().toBoolean()
-
-                if(p2Ready)
-                    palStatus.text = "Ready"
-                else
-                    palStatus.text = "Not Ready"
-
-                if(p2Ready && buttonState) {
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady")
-                            .setValue(true)
-                    val editor = preferences.edit()
-                    editor.putBoolean("readyState", true)
-                    editor.commit()
-
-                    fragmentManager!!.popBackStack()
-                }
-
-
-
-
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("loadPost:onCancelled ${databaseError.toException()}")
-            }
-        }
-
-        val p2Listener = object : ValueEventListener {
-            override fun onDataChange(dataSnapshot: DataSnapshot) {
-
-                p1Ready = dataSnapshot.child("ready").child("p1Ready").value.toString().toBoolean()
-
-                if(p1Ready)
-                    palStatus.text = "Ready"
-                else
-                    palStatus.text = "Not Ready"
-
-
-
-                if(p1Ready && buttonState) {
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady")
-                            .setValue(true)
-                    val editor = preferences.edit()
-                    editor.putBoolean("readyState", true)
-                    editor.commit()
-                    fragmentManager!!.popBackStack()
-                }
-            }
-
-            override fun onCancelled(databaseError: DatabaseError) {
-                println("loadPost:onCancelled ${databaseError.toException()}")
-            }
-        }
-
-        //Log.d("init readyUp session", sessionID)
-        //Toast.makeText(context,sessionID,Toast.LENGTH_SHORT)
-        if(userid == sessionID)
-            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).addValueEventListener(hostListener)
-        else {
-            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).addValueEventListener(p2Listener)
-        }
     }
 
     companion object {
