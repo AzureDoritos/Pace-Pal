@@ -87,8 +87,35 @@ class FriendsFragment : Fragment() {
 
                             }
 
+                            /*
+                            val friendListener = object : ValueEventListener {
+                                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                                    //invScan.clear()
+                                    //dataSnapshot.mapNotNullTo(invScan) { it.getValue<SessionMetadata>(SessionMetadata::class.java) }
+                                    //Toast.makeText(context,dataSnapshot.child("P2").toString(),Toast.LENGTH_SHORT)
+                                    //invitesList.add(Invite(document.id, document.id, dataSnapshot.child("P2").toString()))
+                                        val currentUser = fsdb.collection("users").document(document.id)
+                                        currentUser.get().addOnSuccessListener { currentUserProfile ->
+                                            val currentUserFriend = document["userName"]//iffy here. I think this reference a single friend in the collection
+
+                                            friendsList.add(Friend( , hostUID, sessionType,intentContext))
+                                            adapter.notifyDataSetChanged()
+                                            }
+
+
+                                    }
+
+                                override fun onCancelled(databaseError: DatabaseError) {
+                                    println("loadPost:onCancelled ${databaseError.toException()}")
+                                }
+                            } */
+
+                            //rtdb.child("sessionManager").child("sessionIndex").child(document.id).addListenerForSingleValueEvent(invListener)
+
                         }
-                        //adapter.notifyDataSetChanged()
+
+
+                        adapter.notifyDataSetChanged()
 
                     }
                     else
