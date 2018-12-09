@@ -1,63 +1,59 @@
 package com.group2.pacepal
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
+import android.support.v4.app.ListFragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.*
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.session_init.*
 
+class SessionInitFragment : Fragment() {
 
-class FriendsFragment : Fragment() {
-
-    private val fsdb = FirebaseFirestore.getInstance()
     private val user = FirebaseAuth.getInstance().currentUser
     private val userid = user!!.uid
+
+    private val fsdb = FirebaseFirestore.getInstance()
+
     private val friendsList = ArrayList<Friend>(0)
     private val adapter = FriendsAdapter(friendsList)
-    //private val rtdb = FirebaseDatabase.getInstance().reference
-
-    private lateinit var friendReference: DatabaseReference
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        //inflates the layout xml to be displayed
-        val view = inflater.inflate(R.layout.friends_list, container, false)
+        val view = inflater.inflate(R.layout.session_init, container, false)
 
-        //initializes the recyclerView with its adapter
-        val invView = view?.findViewById(R.id.friendsList) as RecyclerView
+        val invView = view?.findViewById(R.id.friendInvite) as RecyclerView
         invView.layoutManager = LinearLayoutManager(this.context)
         invView.adapter = adapter
 
-        //refresh button to refresh friends list
-        val refreshButton = view.findViewById<Button>(R.id.friendsRefresh)
-        refreshButton.setOnClickListener { refreshFriends() }
 
-        //initial load of friends list
         refreshFriends()
+
+        Log.d("sessionInit", "layout created")
+
         return view
     }
 
-    companion object {
-        fun newInstance(): FriendsFragment = FriendsFragment()
-    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        //val preferences = PreferenceManager.getDefaultSharedPreferences(this.context)
+        //val initState = preferences.getBoolean("initState", false)
 
-    private val clickListener: View.OnClickListener = View.OnClickListener { view ->
-        when (view.id) {
-            R.id.friendsRefresh -> {
-                refreshFriends()
-                Toast.makeText(context,"Clicked!", Toast.LENGTH_SHORT).show()
-            }
-            //R.id.textview2-> {
-            //    Toast.makeText(this, "Clicked 2", Toast.LENGTH_SHORT).show()
-            //}
-        }
+        //if(initState)
+        //    fragmentManager!!.popBackStack()
+
+
     }
 
     private fun refreshFriends() {
@@ -80,10 +76,11 @@ class FriendsFragment : Fragment() {
                                         friendProfile.getString("username").toString(),
                                         friendProfile.getString("first") + " " + friendProfile.getString("last"),
                                         document.id,
-                                        1,
+                                        2,
                                         intentContext
                                 ))
                                 adapter.notifyDataSetChanged()
+                                Log.d("sessionInit", "friends list loaded")
 
                             }
 
@@ -97,6 +94,17 @@ class FriendsFragment : Fragment() {
 
 
 
+    }
+
+
+    companion object {
+        fun newInstance(): SessionInitFragment = SessionInitFragment()
+        @JvmStatic
+        fun newInstance(isMyBoolean: Boolean) = SessionInitFragment().apply {
+            arguments = Bundle().apply {
+                putBoolean("REPLACE WITH A STRING CONSTANT", isMyBoolean)
+            }
+        }
     }
 
 
