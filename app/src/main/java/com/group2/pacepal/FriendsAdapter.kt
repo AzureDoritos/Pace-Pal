@@ -5,6 +5,7 @@ import android.app.PendingIntent.getActivity
 import android.content.Intent
 import android.preference.PreferenceManager
 import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.user_profile.view.*
 import java.security.AccessController.getContext
 
 
-class FriendsAdapter (private val friends: ArrayList<Friend>): RecyclerView.Adapter<FriendsAdapter.FriendHolder>() {
+internal class FriendsAdapter constructor (private var friends: ArrayList<Friend>): RecyclerView.Adapter<FriendsAdapter.FriendHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FriendHolder{
         val inflatedView = LayoutInflater.from(parent.context).inflate(R.layout.friendview_row_item,parent,false)
@@ -35,7 +36,13 @@ class FriendsAdapter (private val friends: ArrayList<Friend>): RecyclerView.Adap
         friend.bindFriend(itemFriend)
     }
 
-    class FriendHolder(v:View) : RecyclerView.ViewHolder(v), View.OnClickListener{
+    /*override fun onClick(v: View?) {
+        Log.d("RecyclerView", "CLICK!")
+        callback.invoke()
+
+    }*/
+
+    class FriendHolder(v:View) : RecyclerView.ViewHolder(v){
 
         private var view : View = v
         private var friend : Friend? = null
@@ -44,10 +51,11 @@ class FriendsAdapter (private val friends: ArrayList<Friend>): RecyclerView.Adap
             v.setOnClickListener {this}
         }
 
-        override fun onClick(v: View?) {
-            Log.d("RecyclerView", "CLICK!")
+        /*override fun onClick(v: View?) {
+            Log.d("RecyclerView", "CLICK!")       //delete if selecting friend works
 
-        }
+
+        }*/
 
         fun bindFriend(friend: Friend) {
             this.friend = friend
@@ -63,35 +71,39 @@ class FriendsAdapter (private val friends: ArrayList<Friend>): RecyclerView.Adap
                 if(friend.activityType == 1){
                     Toast.makeText(friend.feature,"TODO: open friend profile", Toast.LENGTH_SHORT).show()
                 }else if(friend.activityType == 2){
-                    val rtdb = FirebaseDatabase.getInstance().reference
+
+
                     val preferences = PreferenceManager.getDefaultSharedPreferences(friend.feature.applicationContext)
+                    val editor = preferences.edit()
+                    editor.putBoolean("initState", true)
+                    editor.commit()
+
+                    val rtdb = FirebaseDatabase.getInstance().reference
+
                     val sessionID = preferences.getString("sessionID", "")
                     val sessionType = preferences.getString("sessionType","")
 
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("P2").setValue(friend.uid)
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("type").setValue(sessionType)
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady").setValue("false")
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p1Ready").setValue("false")
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p2Ready").setValue("false")
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady").setValue(false)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p1Ready").setValue(false)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p2Ready").setValue(false)
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1").setValue("")
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2").setValue("")
 
 
 
-                    val editor = preferences.edit()
-                    editor.remove("initState")
-                    editor.commit()
-                    editor.putBoolean("initState", true)
-                    editor.commit()
-
-
                     val manager = (friend.feature as FragmentActivity)
 
                     manager.supportFragmentManager.popBackStack()
+                    //manager.supportFragmentManager.popBackStack()
+
 
                     //val transaction =
                     //getActivity(friend.feature).getSupportFragmentManager().beginTransaction().remove(friend.feature).commit()
                 }
+
+                Log.d("friendAdapter", "ran as " + friend.activityType)
             }
 
 

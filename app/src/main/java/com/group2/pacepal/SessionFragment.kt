@@ -1,4 +1,4 @@
-package com.group2.pacepal
+package com.group2.pacepal                //The main fragment in the home menu, for starting and joining sessions
 
 import android.app.ActionBar
 import android.content.Intent
@@ -35,12 +35,12 @@ import android.support.v7.widget.RecyclerView.LayoutManager
 
 class SessionFragment : Fragment() {
 
-    private val fsdb = FirebaseFirestore.getInstance()
-    private val user = FirebaseAuth.getInstance().currentUser
+    private val fsdb = FirebaseFirestore.getInstance()             //firestore database for profiles
+    private val user = FirebaseAuth.getInstance().currentUser        //auth information for signed in user
     private val userid = user!!.uid
-    private val invitesList = ArrayList<Invite>(0)
-    private val adapter = RecyclerAdapter1(invitesList)
-    private val rtdb = FirebaseDatabase.getInstance().reference
+    private val invitesList = ArrayList<Invite>(0)                   //holds invites
+    private val adapter = RecyclerAdapter1(invitesList)                           //adapter for RecyclerView for invites
+    private val rtdb = FirebaseDatabase.getInstance().reference  //realtiem database to look for invites
 
 
     private lateinit var inviteRefrence: DatabaseReference
@@ -50,32 +50,35 @@ class SessionFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 
-        val view = inflater.inflate(R.layout.session_menu, container, false)
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val view = inflater.inflate(R.layout.session_menu, container, false)       //inflates layout
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)               //gets SharedPreferences
 
-        val invView = view?.findViewById(R.id.sessionInvites) as RecyclerView
+        val invView = view?.findViewById(R.id.sessionInvites) as RecyclerView      //defines adapter for RecyclerView for invites
         invView.layoutManager = LinearLayoutManager(this.context)
-
         invView.adapter = adapter
 
-        val refreshButton = view.findViewById<Button>(R.id.inviteRefresh)
+        val refreshButton = view.findViewById<Button>(R.id.inviteRefresh)    //sets listener for invite refresh
         refreshButton.setOnClickListener { refreshInvites() }
 
-        val socialButton = view.findViewById<Button>(R.id.socialCreate)
+        val socialButton = view.findViewById<Button>(R.id.socialCreate)      //sets listener for creating Social session
         socialButton.setOnClickListener{
             val editor = preferences.edit()
-            editor.putBoolean("readyState", false)
-            editor.putBoolean("initState", false)
+            editor.clear()
+            editor.commit()
+            //editor.putBoolean("readyState", false)
+            //editor.putBoolean("initState", false)
             editor.putString("sessionID", userid)
             editor.putString("sessionType","3")
-            editor.putBoolean("friendInvited", false)
+            //editor.putBoolean("friendInvited", false)
             editor.commit()
             val parentContext = context
             val intent = Intent(parentContext, SessionActivity::class.java)
             parentContext!!.startActivity(intent)
+
+
         }
 
-        refreshInvites()
+        refreshInvites()                        //initial refresh for invites
 
 
 
@@ -83,10 +86,6 @@ class SessionFragment : Fragment() {
         return view
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        //adapter.notifyDataSetChanged()
-    }
 
     companion object {
         fun newInstance(): SessionFragment = SessionFragment()
@@ -121,10 +120,7 @@ class SessionFragment : Fragment() {
 
                             val invListener = object : ValueEventListener {
                                 override fun onDataChange(dataSnapshot: DataSnapshot) {
-                                    //invScan.clear()
-                                    //dataSnapshot.mapNotNullTo(invScan) { it.getValue<SessionMetadata>(SessionMetadata::class.java) }
-                                    //Toast.makeText(context,dataSnapshot.child("P2").toString(),Toast.LENGTH_SHORT)
-                                    //invitesList.add(Invite(document.id, document.id, dataSnapshot.child("P2").toString()))
+
                                     if(dataSnapshot.child("P2").value.toString() == userid) {
 
                                         val host = fsdb.collection("users").document(document.id)
@@ -165,13 +161,5 @@ class SessionFragment : Fragment() {
 
     }
 
-    /*fun toSession(sessionID: String) {
-        val intent = Intent(this.context, SessionActivity::class.java)
-        intent.putExtra("sessionID", sessionID)
-        startActivity(intent)
-
-    } */
-
-    //data class Invite (val host: String, val hostID: String, val type: String)
 
 }

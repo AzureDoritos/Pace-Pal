@@ -1,9 +1,12 @@
 package com.group2.pacepal
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
+import android.support.v4.app.ListFragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
@@ -34,23 +37,24 @@ class SessionInitFragment : Fragment() {
         invView.layoutManager = LinearLayoutManager(this.context)
         invView.adapter = adapter
 
+
         refreshFriends()
+
+        Log.d("sessionInit", "layout created")
 
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this.context)
-        val initState = preferences.getBoolean("initState", false)
+        //val preferences = PreferenceManager.getDefaultSharedPreferences(this.context)
+        //val initState = preferences.getBoolean("initState", false)
 
         //if(initState)
         //    fragmentManager!!.popBackStack()
 
 
     }
-
-
 
     private fun refreshFriends() {
         friendsList.clear() //starting here on updates
@@ -76,6 +80,7 @@ class SessionInitFragment : Fragment() {
                                         intentContext
                                 ))
                                 adapter.notifyDataSetChanged()
+                                Log.d("sessionInit", "friends list loaded")
 
                             }
 
@@ -91,8 +96,16 @@ class SessionInitFragment : Fragment() {
 
     }
 
+
     companion object {
         fun newInstance(): SessionInitFragment = SessionInitFragment()
+        @JvmStatic
+        fun newInstance(isMyBoolean: Boolean) = SessionInitFragment().apply {
+            arguments = Bundle().apply {
+                putBoolean("REPLACE WITH A STRING CONSTANT", isMyBoolean)
+            }
+        }
     }
+
 
 }
