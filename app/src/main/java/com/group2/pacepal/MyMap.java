@@ -43,11 +43,11 @@ public class MyMap extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
-        Mapbox.getInstance(context:this, getString(R.string.access_token));
+        Mapbox.getInstance(this, getString(R.string.access_token));
         setContentView(R.layout.my_map);
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(callback:this );
+        mapView.getMapAsync(this );
     }
 
     @Override
@@ -56,17 +56,17 @@ public class MyMap extends AppCompatActivity {
     }
     //Asks for users permission to access GPS
     private void enableLocation(){
-        if (PermissionsManager.areLocationPermissionsGranted(context:this)){
+        if (PermissionsManager.areLocationPermissionsGranted(this)){
             initializeLocationEngine();
-            initializeLocationLayer();
-        } else {
-            permissionsManager = new PermissionsManager(listener:this);
-            permissionsManager.requestLocationPermissions(activity:this);
+            initializeLocationLayer(); }
+        else {
+            permissionsManager = new PermissionsManager(this);
+            permissionsManager.requestLocationPermissions(this);
         }
     }
     @SuppressWarnings("MissingPermssion")
     private void initializeLocationEngine(){
-        locationEngine = new LocationEngineProvider(context:this).obtainBestLocationEngineAvailable();
+        locationEngine = new LocationEngineProvider(this).obtainBestLocationEngineAvailable();
         locationEngine.setPriority(LocationEnginePriority.HIGH_ACCURACY);
         locationEngine.activate();
 
@@ -91,7 +91,7 @@ public class MyMap extends AppCompatActivity {
     //Sets camera location to a specific point on map and zooms the location i
     private void setCameraPosition(Location location){
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(location.getLatitude(),
-                location.getLongitude()),  zoom:13.0 ));
+                location.getLongitude()),  13.0 ));
     }
     @Override
     @SuppressWarnings("MissingPermssion")
