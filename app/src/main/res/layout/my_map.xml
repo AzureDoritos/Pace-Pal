@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android = "https://schemas.android.com/apk/res/android"
+
+<android.support.constraint.ConstraintLayout xmlns:android ="https://schemas.android.com/apk/res/android"
+
     xmlns:mapbox="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MyMap"
@@ -13,7 +15,7 @@
         mapbox:mapbox_cameraTargetLat="36.8124"
         mapbox:mapbox_cameraTargetLng="119.7458"
         mapbox:mapbox_styleUrl="@string/mapbox_style_mapbox_streets"
-        mapbox:mapbox_cameraZoom="12" 
-     />
+        mapbox:mapbox_cameraZoom="12"
+        />
 
 </android.support.constraint.ConstraintLayout>

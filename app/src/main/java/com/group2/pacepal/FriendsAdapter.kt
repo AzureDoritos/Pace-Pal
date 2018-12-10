@@ -104,7 +104,6 @@ internal class FriendsAdapter constructor (private var friends: ArrayList<Friend
                     val preferences = PreferenceManager.getDefaultSharedPreferences(friend.feature.applicationContext)
                     val editor = preferences.edit()
                     editor.putBoolean("initState", true)
-                    editor.commit()
 
                     val rtdb = FirebaseDatabase.getInstance().reference
 
@@ -119,7 +118,9 @@ internal class FriendsAdapter constructor (private var friends: ArrayList<Friend
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1").setValue("")
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2").setValue("")
 
+                    editor.putString("friendUID",friend.uid)
 
+                    editor.commit()
 
                     val manager = (friend.feature as FragmentActivity)
 
