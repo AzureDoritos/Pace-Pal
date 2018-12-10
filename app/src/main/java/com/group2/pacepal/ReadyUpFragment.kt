@@ -16,6 +16,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
+import kotlinx.android.synthetic.main.session_activity.*
 
 
 class ReadyUpFragment : Fragment() {

@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.session_activity.*
 import android.R.attr.fragment
 import android.content.Intent
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 
@@ -27,6 +28,8 @@ class SessionActivity : AppCompatActivity() {
         setContentView(R.layout.session_activity)
 
         Log.d("sessionActivity", "init")
+
+        quitButton.setOnClickListener{this.finish()}
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val sessionID = preferences.getString("sessionID", "")
@@ -77,6 +80,10 @@ class SessionActivity : AppCompatActivity() {
             val readyState = preferences.getBoolean("readyState", false)
             val initState = preferences.getBoolean("initState", false)
             val friendUID = preferences.getString("friendUID", "")
+            val killCommand = preferences.getBoolean("killCommand",false)
+
+            if(killCommand)
+                this.finish()
 
             if( !palSelected && initState && (sessionID == userid)){
                 val docRef3 = db.collection("users").document(friendUID!!)
@@ -101,6 +108,23 @@ class SessionActivity : AppCompatActivity() {
 
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val rtdb = FirebaseDatabase.getInstance().reference
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val sessionID = preferences.getString("sessionID", "")
+
+        rtdb.child("sessionManager").child("sessionIndex").child(sessionID).removeValue()
+
+        val editor = preferences.edit()
+        editor.clear()
+        editor.apply()
+
+
+        TODO("delete session in database")
+    }
 
 
 
