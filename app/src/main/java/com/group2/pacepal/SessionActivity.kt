@@ -64,7 +64,7 @@ class SessionActivity : AppCompatActivity() {
             }
         }
 
-        otherUsername.text = "pending invite.."
+        otherUsername.text = "pending.."
 
 
         if(sessionID == userid) {
@@ -123,7 +123,6 @@ class SessionActivity : AppCompatActivity() {
         editor.apply()
 
 
-        TODO("delete session in database")
     }
 
 

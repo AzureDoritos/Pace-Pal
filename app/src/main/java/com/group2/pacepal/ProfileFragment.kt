@@ -20,8 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot
 import com.google.android.gms.tasks.Task
 import android.support.annotation.NonNull
 import com.google.android.gms.tasks.OnCompleteListener
-
-
+import com.squareup.picasso.Picasso
 
 
 class ProfileFragment : Fragment() {
@@ -48,6 +47,7 @@ class ProfileFragment : Fragment() {
                     profileMiles.text = currentProfile.getDouble("miles").toString()
                     profileChallenges.text = currentProfile.get("challenges").toString()
                     profileRealName.text = currentProfile.get("first").toString() + " " + currentProfile.get("last").toString()
+                    Picasso.with(context).load(currentProfile.getString("profilepic")).fit().into(profileImage)
 
 
 

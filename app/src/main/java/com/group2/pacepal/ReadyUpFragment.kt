@@ -63,8 +63,14 @@ class ReadyUpFragment : Fragment() {
             readyClicker.setOnClickListener {
                 buttonState = !buttonState
 
-                readyClicker.text = buttonState.toString()
-                yourStatus.text = buttonState.toString()
+                if (buttonState){
+                    readyClicker.text = "Unready"
+                    yourStatus.text = "Ready!"
+                }
+                else{
+                    readyClicker.text = "Ready"
+                    yourStatus.text = "Not Ready"
+                }
 
                 if (sessionID == userid)
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p1Ready")
