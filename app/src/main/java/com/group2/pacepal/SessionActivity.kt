@@ -44,9 +44,16 @@ class SessionActivity : AppCompatActivity() {
         else
             openFragment(ReadyUpFragment.newInstance())
 
+        var palSelected = false
+
         supportFragmentManager.addOnBackStackChangedListener {
             val readyState = preferences.getBoolean("readyState", false)
             val initState = preferences.getBoolean("initState", false)
+
+            if( !palSelected && initState ){
+                //fill in profile at top
+                palSelected = true
+            }
 
 
             if(readyState && initState){

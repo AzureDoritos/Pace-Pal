@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity  implements View.OnClickList
             data.put("miles", 0);
             data.put("friends",0);
             data.put("challenges",0);
-            data.put("profilepic", "url");
+            data.put("profilepic", "https://firebasestorage.googleapis.com/v0/b/pace-pal-ad8c4.appspot.com/o/defaultAVI.png?alt=media&token=6c9c47df-8151-4e5b-8843-3440e317346c");
 
             db.collection("users")
                     .whereEqualTo("username", uName.getText().toString())

@@ -76,7 +76,7 @@ class FriendsFragment : Fragment() {
                             friendGet.get().addOnSuccessListener { friendProfile ->
 
                                 friendsList.add(Friend(
-                                        "https://firebasestorage.googleapis.com/v0/b/pace-pal-ad8c4.appspot.com/o/defaultAVI.png?alt=media&token=6c9c47df-8151-4e5b-8843-3440e317346c",
+                                        friendProfile.getString("profilepic").toString(),
                                         friendProfile.getString("username").toString(),
                                         friendProfile.getString("first") + " " + friendProfile.getString("last"),
                                         document.id,
