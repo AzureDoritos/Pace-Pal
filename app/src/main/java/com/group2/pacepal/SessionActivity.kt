@@ -10,6 +10,8 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.session_activity.*
 import android.R.attr.fragment
 import android.content.Intent
+import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 
 
 class SessionActivity : AppCompatActivity() {
@@ -17,12 +19,12 @@ class SessionActivity : AppCompatActivity() {
     //val sessionId = intent.getStringExtra("sessionID")
     private val user = FirebaseAuth.getInstance().currentUser
     private val userid = user!!.uid
+    private val db = FirebaseFirestore.getInstance()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.session_activity)
-
 
         Log.d("sessionActivity", "init")
 
@@ -37,6 +39,31 @@ class SessionActivity : AppCompatActivity() {
         Log.d("sessionID", sessionID)
         Log.d("userID", userid)
 
+        val docRef = db.collection("users").document(userid)
+        docRef.get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val currentProfile = task.result
+                localUsername.text = currentProfile!!.getString("username")
+                Picasso.with(this).load(currentProfile.getString("profilepic")).fit().into(localPic)
+
+                if(userid != sessionID){
+                    val docRef2 = db.collection("users").document(sessionID!!)
+                    docRef2.get().addOnCompleteListener { task2 ->
+                        if (task2.isSuccessful) {
+                            val otherProfile = task2.result
+                            otherUsername.text = otherProfile!!.getString("username")
+                            Picasso.with(this).load(otherProfile.getString("profilepic")).fit().into(otherPic)
+                            }
+                    }
+                }
+
+
+            }
+        }
+
+        otherUsername.text = "pending invite.."
+
+
         if(sessionID == userid) {
             openFragment(ReadyUpFragment.newInstance())
             openFragment(SessionInitFragment.newInstance())
@@ -49,9 +76,18 @@ class SessionActivity : AppCompatActivity() {
         supportFragmentManager.addOnBackStackChangedListener {
             val readyState = preferences.getBoolean("readyState", false)
             val initState = preferences.getBoolean("initState", false)
+            val friendUID = preferences.getString("friendUID", "")
 
-            if( !palSelected && initState ){
-                //fill in profile at top
+            if( !palSelected && initState && (sessionID == userid)){
+                val docRef3 = db.collection("users").document(friendUID!!)
+                docRef3.get().addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        val otherProfile = task.result
+                        otherUsername.text = otherProfile!!.getString("username")
+                        Picasso.with(this).load(otherProfile.getString("profilepic")).fit().into(otherPic)
+                    }
+                }
+
                 palSelected = true
             }
 

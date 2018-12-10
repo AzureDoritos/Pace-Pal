@@ -79,6 +79,8 @@ class SessionInitFragment : Fragment() {
                                         2,
                                         intentContext
                                 ))
+
+
                                 adapter.notifyDataSetChanged()
                                 Log.d("sessionInit", "friends list loaded")
 
