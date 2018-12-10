@@ -9,8 +9,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.session_activity.*
 import android.R.attr.fragment
-
-
+import android.content.Intent
 
 
 class SessionActivity : AppCompatActivity() {
@@ -49,8 +48,10 @@ class SessionActivity : AppCompatActivity() {
             val readyState = preferences.getBoolean("readyState", false)
             val initState = preferences.getBoolean("initState", false)
 
+
             if(readyState && initState){
-                textView5ses.text = "Connected!"
+                val intent = Intent(this, MyMap::class.java)
+                this.startActivity(intent)
             }
         }
 
