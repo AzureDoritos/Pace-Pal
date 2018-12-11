@@ -226,7 +226,8 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
                 palDistText.setText(String.valueOf(p2Dist));
 
                 TextView localDistText = findViewById(R.id.localSessionMiles);
-                localDistText.setText(String.valueOf(round(localDistance,2)));
+                String setMilesText = String.valueOf(round(localDistance,2)) + " Miles";
+                localDistText.setText(setMilesText);
 
                 mapView.getMapAsync(new OnMapReadyCallback() {
                     @Override

@@ -11,12 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="367dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        mapbox:layout_constraintBottom_toTopOf="@+id/sessionExitButton"
         mapbox:layout_constraintEnd_toEndOf="parent"
         mapbox:layout_constraintHorizontal_bias="0.0"
         mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toBottomOf="@+id/sessionStatus"
         mapbox:mapbox_cameraTargetLat="36.8124"
         mapbox:mapbox_cameraTargetLng="-119.7458"
         mapbox:mapbox_cameraZoom="15"
@@ -76,7 +76,7 @@
         android:id="@+id/localSessionMiles"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:text="      "
@@ -111,11 +111,11 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
-        android:text="Miles"
+        android:text=" "
         android:textSize="15sp"
         mapbox:layout_constraintBottom_toTopOf="@+id/mapView"
         mapbox:layout_constraintEnd_toStartOf="@+id/sessionStatus"
-        mapbox:layout_constraintHorizontal_bias="0.15"
+        mapbox:layout_constraintHorizontal_bias="0.212"
         mapbox:layout_constraintStart_toEndOf="@+id/localSessionMiles"
         mapbox:layout_constraintTop_toBottomOf="@+id/localSessionPic"
         mapbox:layout_constraintVertical_bias="0.0" />
@@ -124,10 +124,11 @@
         android:id="@+id/sessionStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You are 0 miles ahead!"
+        android:layout_marginBottom="20dp"
+        android:text="   "
         android:textSize="17sp"
-        tools:layout_editor_absoluteX="119dp"
-        tools:layout_editor_absoluteY="140dp" />
+        mapbox:layout_constraintBottom_toTopOf="@+id/mapView"
+        tools:layout_editor_absoluteX="199dp" />
 
     <TextView
         android:id="@+id/palMileTEXT"
@@ -148,14 +149,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="Button"
         mapbox:layout_constraintBottom_toBottomOf="parent"
         mapbox:layout_constraintEnd_toEndOf="parent"
-        mapbox:layout_constraintStart_toStartOf="parent"
-        mapbox:layout_constraintTop_toBottomOf="@+id/mapView" />
+        mapbox:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
 
