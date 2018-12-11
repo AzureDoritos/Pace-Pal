@@ -1,5 +1,6 @@
 package com.group2.pacepal
 
+import android.Manifest
 import android.app.PendingIntent.getActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -10,6 +11,9 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.session_activity.*
 import android.R.attr.fragment
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.support.v4.app.ActivityCompat
+import android.support.v4.content.ContextCompat
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
@@ -29,7 +33,25 @@ class SessionActivity : AppCompatActivity() {
 
         Log.d("sessionActivity", "init")
 
-        quitButton.setOnClickListener{this.finish()}
+
+
+
+        if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    1)
+
+
+
+        }
+
+
+
+
+            quitButton.setOnClickListener{this.finish()}
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val sessionID = preferences.getString("sessionID", "")
