@@ -58,7 +58,7 @@ class RecyclerAdapter1 (private val invites: ArrayList<Invite>)  : RecyclerView.
             val preferences = PreferenceManager.getDefaultSharedPreferences(invite.feature)
             val editor = preferences.edit()
             editor.putString("sessionID", invite.hostID)
-            //editor.putBoolean("readyState", false)
+            editor.putString("friendUID", invite.hostID)
             editor.putBoolean("initState", true)
             editor.commit()
             view.inviteButton.setOnClickListener{

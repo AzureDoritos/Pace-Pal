@@ -123,6 +123,7 @@ class SessionActivity : AppCompatActivity() {
 
             if(readyState && initState){
                 val intent = Intent(this, MyMap::class.java)
+                android.os.SystemClock.sleep(1000)
                 this.startActivity(intent)
             }
         }

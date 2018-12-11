@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.readyup_fragment.*
 import android.preference.PreferenceManager
 import android.content.SharedPreferences
+import android.support.v4.app.FragmentManager
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
@@ -104,7 +105,10 @@ class ReadyUpFragment : Fragment() {
                     editor.putBoolean("readyState", true)
                     editor.commit()
 
-                    fragmentManager!!.popBackStack()
+                    fragmentManager?.popBackStack()
+
+
+
                 }
 
 
@@ -135,7 +139,7 @@ class ReadyUpFragment : Fragment() {
                     val editor = preferences.edit()
                     editor.putBoolean("readyState", true)
                     editor.commit()
-                    fragmentManager!!.popBackStack()
+                    fragmentManager?.popBackStack()
                 }
             }
 
@@ -156,5 +160,7 @@ class ReadyUpFragment : Fragment() {
     companion object {
         fun newInstance(): ReadyUpFragment = ReadyUpFragment()
     }
+
+
 
 }

@@ -116,8 +116,12 @@ internal class FriendsAdapter constructor (private var friends: ArrayList<Friend
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("absoluteReady").setValue(false)
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p1Ready").setValue(false)
                     rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("ready").child("p2Ready").setValue(false)
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1").setValue("")
-                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2").setValue("")
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1distance").setValue(0)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1long").setValue(0)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1lat").setValue(0)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2distance").setValue(0)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2long").setValue(0)
+                    rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2lat").setValue(0)
 
                     editor.putString("friendUID",friend.uid)
 
