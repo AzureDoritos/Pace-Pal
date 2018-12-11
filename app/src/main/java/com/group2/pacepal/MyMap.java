@@ -3,6 +3,7 @@ package com.group2.pacepal;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,11 +12,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
+import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -28,8 +34,15 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineListener;
 import com.mapbox.android.core.location.LocationEnginePriority;
@@ -43,7 +56,11 @@ import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.squareup.picasso.Picasso;
 
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import timber.log.Timber;
 
@@ -52,11 +69,23 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 public class MyMap extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private MapView mapView;
 
-    private double locLong;
-    private double locLat;
+    private double locLong = 0;
+    private double locLat = 0;
+    double oldLon,oldLat;
+    double localDistance = 0;
+    String sessionID;
+    Boolean sessionHost = false;
 
     private GoogleApiClient googleApiClient;
     private LocationRequest mLocationRequest;
+
+    String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private DatabaseReference rtdb;
+
+
+
+
 
 
     @Override
@@ -67,6 +96,58 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
         setContentView(R.layout.my_map);
         mapView = (MapView) findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
+
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(MyMap.this);
+
+
+
+        String friendUID = sharedPref.getString("friendUID","");
+        String sessionType = sharedPref.getString("sessionType", "");
+        sessionID = sharedPref.getString("sessionID", "");
+        if(sessionID == userid)
+            sessionHost = true;
+
+        DocumentReference docRef = db.collection("users").document(userid);
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        TextView textViewUName = findViewById(R.id.localSessionUname);
+                        textViewUName.setText(document.get("username").toString());
+                        ImageView localUserPic = findViewById(R.id.localSessionPic);
+                        Picasso.with(getApplicationContext()).load(document.get("profilepic").toString()).into(localUserPic);
+                    } else {
+                        //Log.d(TAG, "No such document");
+                    }
+                } else {
+                   // Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+        DocumentReference docRef2 = db.collection("users").document(friendUID);
+        docRef2.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        TextView paltextViewUName = findViewById(R.id.palSessionUname);
+                        paltextViewUName.setText(document.get("username").toString());
+                        ImageView palUserPic = findViewById(R.id.palSessionPic);
+                        Picasso.with(getApplicationContext()).load(document.get("profilepic").toString()).into(palUserPic);
+                    } else {
+                        //Log.d(TAG, "No such document");
+                    }
+                } else {
+                    // Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
+
+
 
 
         //Instantiating the GoogleApiClient
@@ -89,27 +170,19 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
                         .title("Player1")
                         .snippet("Player1loc");
 
-
-
-
-
-
+                TextView localDistText = findViewById(R.id.localSessionMiles);
+                localDistText.setText(String.valueOf(localDistance));
 
                 mapView.getMapAsync(new OnMapReadyCallback() {
                     @Override
                     public void onMapReady(MapboxMap mapboxMap) {
 
                         mapboxMap.clear();
-                        //mapboxMap.addMarker(marker1);
+
                         mapboxMap.addMarker(marker2);
 
                         Log.d("MapRefresh", "refreshed");
 
-                        mapboxMap.addMarker(new MarkerOptions()
-                                .position(new LatLng(41.885, -87.679))
-                                .title("Chicago")
-                                .snippet("Illinois")
-                        );
                     }
                 });
                 handler.postDelayed(this, delay);
@@ -191,8 +264,59 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
         //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
         //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        if(oldLat == 0)
+            oldLat = location.getLatitude();
+        else
+            oldLat = locLat;
         locLat = location.getLatitude();
+        if(oldLon == 0)
+            oldLon = location.getLongitude();
+        else
+            oldLon = locLong;
         locLong = location.getLongitude();
+
+        distance(oldLat,locLat,oldLon,locLong);
+
+    }
+
+    public void distance(double lat1, double lat2, double lon1,
+                                  double lon2) {
+
+        final int R = 6371; // Radius of the earth
+
+        double latDistance = Math.toRadians(lat2 - lat1);
+        double lonDistance = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
+                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
+                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        double distance = R * c * 1000; // convert to meters
+
+        distance = Math.pow(distance, 2);
+
+        localDistance = Math.sqrt(distance)  + localDistance;
+
+        rtdb = FirebaseDatabase.getInstance().getReference();
+        Log.d("mymapsesid",sessionID);
+        Log.d("mymapuid",userid);
+        if(sessionHost) {
+            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1distance").setValue(distance);
+            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1long").setValue(lon2);
+            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1lat").setValue(lat2);
+        }
+        else{
+            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2distance").setValue(distance);
+            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2long").setValue(lon2);
+            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2lat").setValue(lat2);
+        }
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = new BigDecimal(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
     }
 
 
