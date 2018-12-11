@@ -98,11 +98,11 @@ class SessionActivity : AppCompatActivity() {
                 palSelected = true
             }
 
-
+           /*
             if(readyState && initState){
                 val intent = Intent(this, MyMap::class.java)
                 this.startActivity(intent)
-            }
+            } */ 
         }
 
 
