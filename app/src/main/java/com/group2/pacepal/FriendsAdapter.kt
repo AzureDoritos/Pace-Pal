@@ -89,6 +89,7 @@ internal class FriendsAdapter constructor (private var friends: ArrayList<Friend
                     bundle.putString("friend_uid", friend.uid)
                     bundle.putString("friend_userName", friend.userName)
                     bundle.putString("friend_real_name", friend.realName)
+
                     myFragment.setArguments(bundle)
                     //refers to the primary activity's (the mainActivity2) context to create a new fragement within a fragment and still
                     //keep track of the fragemnt's position on the stack
