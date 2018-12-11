@@ -5,6 +5,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -49,6 +50,8 @@ import com.mapbox.android.core.location.LocationEnginePriority;
 import com.mapbox.android.core.location.LocationEngineProvider;
 import com.mapbox.core.MapboxService;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
+import com.mapbox.mapboxsdk.annotations.IconFactory;
 import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.geometry.LatLng;
@@ -159,7 +162,6 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
 
         startLocationUpdates();
 
-
         Handler handler = new Handler();
         int delay = 2000; //milliseconds
 
@@ -168,10 +170,10 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
                 MarkerOptions marker2 = new MarkerOptions()
                         .position(new LatLng(locLat, locLong))
                         .title("Player1")
-                        .snippet("Player1loc");
+                        .snippet("Player 1 location");
 
                 TextView localDistText = findViewById(R.id.localSessionMiles);
-                localDistText.setText(String.valueOf(localDistance));
+                localDistText.setText(String.valueOf(round(localDistance,2)));
 
                 mapView.getMapAsync(new OnMapReadyCallback() {
                     @Override
@@ -256,6 +258,9 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
                 Looper.myLooper());
     }
 
+    Location loc1 = new Location("");
+    Location loc2 = new Location("");
+
     public void onLocationChanged(Location location) {
         // New location has now been determined
         String msg = "Updated Location: " +
@@ -264,6 +269,7 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
         //Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         // You can now create a LatLng Object for use with maps
         //LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
         if(oldLat == 0)
             oldLat = location.getLatitude();
         else
@@ -279,33 +285,28 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
 
     }
 
+
+
     public void distance(double lat1, double lat2, double lon1,
                                   double lon2) {
 
-        final int R = 6371; // Radius of the earth
+        loc1.setLatitude(lat1);
+        loc1.setLongitude(lon1);
+        loc2.setLatitude(lat2);
+        loc2.setLongitude(lon2);
+        localDistance += loc1.distanceTo(loc2) * 0.00062137;
 
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
-                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
-                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // convert to meters
-
-        distance = Math.pow(distance, 2);
-
-        localDistance = Math.sqrt(distance)  + localDistance;
 
         rtdb = FirebaseDatabase.getInstance().getReference();
         Log.d("mymapsesid",sessionID);
         Log.d("mymapuid",userid);
         if(sessionHost) {
-            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1distance").setValue(distance);
+            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1distance").setValue(localDistance);
             rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1long").setValue(lon2);
             rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p1lat").setValue(lat2);
         }
         else{
-            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2distance").setValue(distance);
+            rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2distance").setValue(localDistance);
             rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2long").setValue(lon2);
             rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").child("p2lat").setValue(lat2);
         }
