@@ -39,8 +39,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -76,6 +79,10 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
     private double locLat = 0;
     double oldLon,oldLat;
     double localDistance = 0;
+    double p2Dist = 0;
+    double p2Long = 0;
+    double p2Lat = 0;
+
     String sessionID;
     Boolean sessionHost = false;
 
@@ -84,7 +91,8 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
 
     String userid = FirebaseAuth.getInstance().getCurrentUser().getUid();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private DatabaseReference rtdb;
+
+    DatabaseReference rtdb = FirebaseDatabase.getInstance().getReference();
 
 
 
@@ -150,6 +158,43 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
             }
         });
 
+        ValueEventListener postListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // Get Post object and use the values to update the UI
+                if(sessionHost){
+                    /*String tempdist = (String) dataSnapshot.child("p2distance").getValue();
+                    String templat = (String) dataSnapshot.child("p2lat").getValue();
+                    String templong  = (String) dataSnapshot.child("p2long").getValue();
+
+                    p2Dist = Double.parseDouble(tempdist);
+                    p2Long = Double.parseDouble(templong);
+                    p2Lat = Double.parseDouble(templat);*/
+
+                    p2Dist = dataSnapshot.child("p2distance").getValue(Double.class);
+                    p2Long = dataSnapshot.child("p2long").getValue(Double.class);
+                    p2Lat = dataSnapshot.child("p2lat").getValue(Double.class);
+                }
+                else{
+                    p2Dist =  dataSnapshot.child("p1distance").getValue(Double.class);
+                    p2Lat = dataSnapshot.child("p1lat").getValue(Double.class);
+                    p2Long  = dataSnapshot.child("p1long").getValue(Double.class);
+                }
+                // ...
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Getting Post failed, log a message
+                //Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                // ...
+            }
+        };
+
+
+
+        rtdb.child("sessionManager").child("sessionIndex").child(sessionID).child("locations").addValueEventListener(postListener);
+
 
 
 
@@ -172,6 +217,14 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
                         .title("Player1")
                         .snippet("Player 1 location");
 
+                MarkerOptions marker3 = new MarkerOptions()
+                        .position(new LatLng(p2Lat,p2Long))
+                        .title("Player 2")
+                        .snippet("Player 2 location");
+
+                TextView palDistText = findViewById(R.id.palSessionMiles);
+                palDistText.setText(String.valueOf(p2Dist));
+
                 TextView localDistText = findViewById(R.id.localSessionMiles);
                 localDistText.setText(String.valueOf(round(localDistance,2)));
 
@@ -182,6 +235,7 @@ public class MyMap extends AppCompatActivity implements GoogleApiClient.Connecti
                         mapboxMap.clear();
 
                         mapboxMap.addMarker(marker2);
+                        mapboxMap.addMarker(marker3);
 
                         Log.d("MapRefresh", "refreshed");
 
