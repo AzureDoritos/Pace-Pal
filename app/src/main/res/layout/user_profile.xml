@@ -96,7 +96,7 @@
 
     <ImageView
         android:id="@+id/profileImage"
-        android:layout_width="217dp"
+        android:layout_width="178dp"
         android:layout_height="174dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="56dp"
@@ -104,7 +104,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/profile_pic_placeholder" />
+        app:srcCompat="@drawable/circle_profile_stats" />
 
     <TextView
         android:id="@+id/profileUsername"

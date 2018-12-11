@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.firestore.FirebaseFirestore
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.user_profile.*
 
 class friendProfileFragment: Fragment() {
@@ -33,6 +34,7 @@ class friendProfileFragment: Fragment() {
                     profileMiles.text = currentProfile.getDouble("miles").toString()
                     profileChallenges.text = currentProfile.get("challenges").toString()
                     profileRealName.text = currentProfile.get("first").toString() + " " + currentProfile.get("last").toString()
+                    Picasso.with(context).load(currentProfile.getString("profilepic")).fit().into(profileImage)
 
 
 
