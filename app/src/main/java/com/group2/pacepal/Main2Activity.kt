@@ -1,10 +1,13 @@
 package com.group2.pacepal
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.Fragment
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.widget.Button
 import com.group2.pacepal.R.menu.navigation
 import kotlinx.android.synthetic.main.main_menu.*
 import com.google.firebase.firestore.FirebaseFirestore
@@ -50,6 +53,10 @@ class Main2Activity : AppCompatActivity() {
         false
     }
 
+
+
+
+
     private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, fragment)
@@ -65,12 +72,17 @@ class Main2Activity : AppCompatActivity() {
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
 
+
+
         val sessionFragment = SessionFragment.newInstance()
         openFragment(sessionFragment)
 
 
 
     }
+
+
+
 
 
 }

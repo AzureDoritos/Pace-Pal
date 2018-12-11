@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment
 import android.support.v7.app.AppCompatActivity
 
 
-class SessionActivity : AppCompatActivity() {
+/*class SessionActivity : AppCompatActivity() {
 
     //val sessionId = intent.getStringExtra("sessionID")
 
@@ -27,12 +27,12 @@ class SessionActivity : AppCompatActivity() {
 
     }
 
-    private fun openFragment(fragment: Fragment) {
+ /*   private fun openFragment(fragment: Fragment) {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.sessionHolder, fragment)
         transaction.addToBackStack(null)
         transaction.commit()
-    }
+    }*/
 
 
-}
+}*/

@@ -55,6 +55,9 @@ class SessionFragment : Fragment() {
 
         invView.adapter = adapter
 
+        val button = view?.findViewById(R.id.map_button) as Button
+        button.setOnClickListener {    val intent = Intent(context, MyMap::class.java)
+            startActivity(intent) }
         val refreshButton = view.findViewById<Button>(R.id.inviteRefresh)
         refreshButton.setOnClickListener { refreshInvites() }
 
@@ -81,11 +84,14 @@ class SessionFragment : Fragment() {
                 refreshInvites()
                 Toast.makeText(context,"Clicked!",Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
             //R.id.textview2-> {
             //    Toast.makeText(this, "Clicked 2", Toast.LENGTH_SHORT).show()
             //}
-        }
-    }
+
+
 
 
     private fun refreshInvites() {

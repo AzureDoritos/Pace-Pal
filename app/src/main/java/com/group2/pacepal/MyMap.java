@@ -75,13 +75,12 @@ public class MyMap extends AppCompatActivity {
         mapView.onSaveInstanceState(outState);
     }
 
-    @Override
+   /* @Override
     public void onMapReady(MapboxMap mapboxMap) {
 
         LocationComponent locationComponent = mapboxMap.getLocationComponent();
-
         locationComponent.activateLocationComponent(this);
         locationComponent.setLocationComponentEnabled(true);
 
-    }
+    } */
 }
